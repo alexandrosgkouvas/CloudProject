@@ -23,49 +23,7 @@ module spoke6 'Spoke6.bicep' = {
 }
 
 
-
-
-
-@description('virtual network for developers and testers')
-resource devEnv 'Microsoft.Network/virtualNetworks@2024-01-01' = {
-  name: 'devEnv'
-  location: 'francecentral'
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        '10.5.0.0/23'
-      ]
-    }
-    subnets: [
-      {
-        name: 'devEnv'
-        properties: {
-          addressPrefix: '10.5.0.0/25'
-          delegations: []
-          privateEndpointNetworkPolicies: 'Enabled'
-          privateLinkServiceNetworkPolicies: 'Enabled'
-        }
-        type: 'Microsoft.Network/virtualNetworks/subnets'
-      }
-      {
-        name: 'testEnv'
-        properties: {
-          addressPrefix: '10.5.0.128/26'
-          delegations: []
-          privateEndpointNetworkPolicies: 'Enabled'
-          privateLinkServiceNetworkPolicies: 'Enabled'
-        }
-        type: 'Microsoft.Network/virtualNetworks/subnets'
-      }
-    ]
-    virtualNetworkPeerings: []
-    enableDdosProtection: false
-  }
-}
-
-
-
-@description('Generated from /subscriptions/ba887f8c-c1e1-441d-8c48-b5e82827a446/resourceGroups/test3/providers/Microsoft.Network/virtualNetworks/hub')
+@description('Hub vnet')
 resource hub 'Microsoft.Network/virtualNetworks@2024-01-01' = {
   name: 'hub'
   location: 'francecentral'
@@ -122,7 +80,7 @@ resource hub 'Microsoft.Network/virtualNetworks@2024-01-01' = {
   }
 }
 
-@description('Generated from /subscriptions/ba887f8c-c1e1-441d-8c48-b5e82827a446/resourceGroups/test2/providers/Microsoft.Network/publicIPAddresses/vpnIP')
+@description('bastion public IP')
 resource bastionIP 'Microsoft.Network/publicIPAddresses@2024-01-01' = {
   name: 'bastionIP'
   location: 'francecentral'
@@ -144,7 +102,7 @@ resource bastionIP 'Microsoft.Network/publicIPAddresses@2024-01-01' = {
 
 
 
-@description('Generated from /subscriptions/ba887f8c-c1e1-441d-8c48-b5e82827a446/resourceGroups/test3/providers/Microsoft.Network/bastionHosts/hub-Bastion')
+@description('hubBastion')
 resource hubBastion 'Microsoft.Network/bastionHosts@2024-01-01' = {
   name: 'hub-Bastion'
   location: 'francecentral'
@@ -155,14 +113,13 @@ resource hubBastion 'Microsoft.Network/bastionHosts@2024-01-01' = {
     ipConfigurations: [
       {
         name: 'IpConf'
-        //id:'/subscriptions/ba887f8c-c1e1-441d-8c48-b5e82827a446/resourceGroups/test3/providers/Microsoft.Network/bastionHosts/hub-Bastion/bastionHostIpConfigurations/IpConf'
         properties: {
           privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
-            id: bastionIP.id//'/subscriptions/ba887f8c-c1e1-441d-8c48-b5e82827a446/resourceGroups/test2/providers/Microsoft.Network/publicIPAddresses/vpnIP'
+            id: bastionIP.id
           }
           subnet: {
-            id: hub.properties.subnets[1].id//'/subscriptions/ba887f8c-c1e1-441d-8c48-b5e82827a446/resourceGroups/test3/providers/Microsoft.Network/virtualNetworks/hub/subnets/AzureBastionSubnet'
+            id: hub.properties.subnets[1].id
           }
         }
       }
@@ -194,7 +151,7 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-01-01'={
 
 
 
-@description('Generated from /subscriptions/ba887f8c-c1e1-441d-8c48-b5e82827a446/resourceGroups/test3/providers/Microsoft.Network/firewallPolicies/hubFirewall')
+@description('hub firewall policy')
 resource hubFirewallPolicy 'Microsoft.Network/firewallPolicies@2024-01-01' = {
   name: 'hubFirewall'
   location: 'francecentral'
@@ -208,7 +165,7 @@ resource hubFirewallPolicy 'Microsoft.Network/firewallPolicies@2024-01-01' = {
 }
 
 
-@description('Generated from /subscriptions/ba887f8c-c1e1-441d-8c48-b5e82827a446/resourceGroups/test3/providers/Microsoft.Network/azureFirewalls/hubFirewall')
+@description('hub firewall')
 resource hubFirewall 'Microsoft.Network/azureFirewalls@2024-01-01' = {
   name: 'hubFirewall'
   location: 'francecentral'
@@ -226,14 +183,12 @@ resource hubFirewall 'Microsoft.Network/azureFirewalls@2024-01-01' = {
     ipConfigurations: [
       {
         name: 'ipConf'
-        //id: '/subscriptions/ba887f8c-c1e1-441d-8c48-b5e82827a446/resourceGroups/test3/providers/Microsoft.Network/azureFirewalls/hubFirewall/azureFirewallIpConfigurations/vpnIP2'
         properties: {
-          // privateIPAddress: '10.0.2.4'
           publicIPAddress: {
-            id: publicIpAddress.id//'/subscriptions/ba887f8c-c1e1-441d-8c48-b5e82827a446/resourceGroups/test2/providers/Microsoft.Network/publicIPAddresses/vpnIP2'
+            id: publicIpAddress.id
           }
           subnet: {
-            id: hub.properties.subnets[2].id//'/subscriptions/ba887f8c-c1e1-441d-8c48-b5e82827a446/resourceGroups/test3/providers/Microsoft.Network/virtualNetworks/hub/subnets/AzureFirewallSubnet'
+            id: hub.properties.subnets[2].id
           }
         }
       }
@@ -242,11 +197,14 @@ resource hubFirewall 'Microsoft.Network/azureFirewalls@2024-01-01' = {
     applicationRuleCollections: []
     natRuleCollections: []
     firewallPolicy: {
-      id: hubFirewallPolicy.id//'/subscriptions/ba887f8c-c1e1-441d-8c48-b5e82827a446/resourceGroups/test3/providers/Microsoft.Network/firewallPolicies/hubFirewall'
+      id: hubFirewallPolicy.id
     }
   }
 }
 
+////////////////////////////
+///////////PEERINGS////////
+//////////////////////////
 resource hubToLogs 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2023-11-01' = {
   name: 'peer1'
   parent: hub
