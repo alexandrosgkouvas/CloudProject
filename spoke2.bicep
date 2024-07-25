@@ -228,3 +228,6 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
     ]
   }
 }
+
+output netId string = net.id
+output netPrefixes string = net.properties.addressSpace.addressPrefixes[0]
