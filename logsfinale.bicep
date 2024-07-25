@@ -32,3 +32,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     accessTier: 'Hot'
   }
 }
+
+output netId string = vnet.id
+output netPrefixes string = vnet.properties.addressSpace.addressPrefixes[0]
