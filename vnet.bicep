@@ -11,3 +11,5 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-01-01' = {
 }
 
 output vnetId string = vnet.id
+output netPrefixes string = vnet.properties.addressSpace.addressPrefixes[0]
+
