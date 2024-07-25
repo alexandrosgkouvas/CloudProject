@@ -72,5 +72,7 @@ resource KubernetesSpoke6 'Microsoft.ContainerService/managedClusters@2024-02-01
   
 }
 
+output netId string = Vnetspoke6.id
+output netPrefixes string = Vnetspoke6.properties.addressSpace.addressPrefixes[0]
 output clusterName string = KubernetesSpoke6.name
 output clusterUri string = KubernetesSpoke6.properties.endpoint
