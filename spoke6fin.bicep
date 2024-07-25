@@ -60,3 +60,5 @@ resource kubspoke2 'Microsoft.ContainerService/managedClusters@2023-01-01' = {
     }
   }
 }
+output netId string = vnet.id
+output netPrefixes string = vnet.properties.addressSpace.addressPrefixes[0]
