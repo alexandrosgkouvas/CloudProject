@@ -1,3 +1,3 @@
 # CloudProject
-Our CloudProject
-for spoke 1 we have the logsfinale.bicep code
+
+For spoke 1 we have the logsfinale.bicep code
