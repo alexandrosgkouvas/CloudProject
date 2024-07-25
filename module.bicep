@@ -125,3 +125,6 @@ resource webapp 'Microsoft.Web/sites@2023-12-01' = {
         }
       }
 }
+
+output netId string = vnet.id
+output netPrefixes string = vnet.properties.addressSpace.addressPrefixes[0]
