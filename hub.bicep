@@ -18,7 +18,7 @@ module spoke5 'spoke5.bicep' = {
   name: 'devs-Vnet'
 }
 
-module spoke6 'spoke6fin.bicep' = {
+module spoke6 'spoke6.bicep' = {
   name: 'kubernetes'
 }
 
