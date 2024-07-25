@@ -588,3 +588,6 @@ resource GatewayWebApp 'Microsoft.Network/applicationGateways@2024-01-01' = {
     }
   }
 }
+
+output netId string = VN.id
+output netPrefixes string = VN.properties.addressSpace.addressPrefixes[0]
