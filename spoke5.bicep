@@ -523,3 +523,7 @@ resource fileshare 'Microsoft.Network/privateEndpoints@2024-01-01' = {
     customDnsConfigs: []
   }
 }
+
+
+output netId string = devEnv.id
+output netPrefixes string = devEnv.properties.addressSpace.addressPrefixes[0]
